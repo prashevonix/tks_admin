@@ -1,0 +1,98 @@
+{
+  "sessionInfo": {
+    "date": "2025-01-27",
+    "description": "Changes made during development session",
+    "totalFilesChanged": 2
+  },
+  "changes": [
+    {
+      "file": "package.json",
+      "filePath": "package.json",
+      "changes": [
+        {
+          "type": "script_modification",
+          "description": "Updated npm scripts to use cross-env for Windows compatibility",
+          "location": "scripts section",
+          "oldValue": {
+            "dev": "NODE_ENV=development tsx server/index.ts",
+            "start": "NODE_ENV=production node dist/index.js"
+          },
+          "newValue": {
+            "dev": "cross-env NODE_ENV=development tsx server/index.ts",
+            "start": "cross-env NODE_ENV=production node dist/index.js"
+          },
+          "linesChanged": {
+            "start": 7,
+            "end": 9
+          }
+        },
+        {
+          "type": "dependency_addition",
+          "description": "Added cross-env as a dev dependency for cross-platform environment variable support",
+          "location": "devDependencies section",
+          "oldValue": null,
+          "newValue": {
+            "package": "cross-env",
+            "version": "^10.1.0"
+          },
+          "linesChanged": {
+            "start": 111,
+            "end": 111
+          }
+        }
+      ],
+      "summary": "Fixed Windows PowerShell compatibility by adding cross-env package and updating scripts to use it for setting NODE_ENV"
+    },
+    {
+      "file": "client/src/pages/AdminDashboard.tsx",
+      "filePath": "client/src/pages/AdminDashboard.tsx",
+      "changes": [
+        {
+          "type": "bug_fix",
+          "description": "Fixed weekly new users calculation - changed from 7 hours to 7 days",
+          "location": "processAnalytics function, activityMetrics calculation",
+          "oldValue": "const weekAgo = now - 7 * 60 * 60 * 1000;",
+          "newValue": "const weekAgo = now - 7 * 24 * 60 * 60 * 1000; // 7 days",
+          "linesChanged": {
+            "start": 282,
+            "end": 282
+          },
+          "impact": "Weekly new users metric now correctly calculates users created in the last 7 days instead of last 7 hours"
+        },
+        {
+          "type": "bug_fix",
+          "description": "Fixed monthly active users calculation - changed from 30 hours to 30 days",
+          "location": "processAnalytics function, activityMetrics calculation",
+          "oldValue": "const monthAgo = now - 30 * 60 * 60 * 1000;",
+          "newValue": "const monthAgo = now - 30 * 24 * 60 * 60 * 1000; // 30 days",
+          "linesChanged": {
+            "start": 283,
+            "end": 283
+          },
+          "impact": "Monthly active users metric now correctly calculates users active in the last 30 days instead of last 30 hours"
+        }
+      ],
+      "summary": "Fixed time calculation bugs in admin dashboard analytics - corrected weekly (7 days) and monthly (30 days) time periods"
+    }
+  ],
+  "technicalDetails": {
+    "package.json": {
+      "reason": "Windows PowerShell doesn't support Unix-style environment variable syntax (NODE_ENV=value). Added cross-env to make scripts work cross-platform.",
+      "commandToInstall": "npm install --save-dev cross-env"
+    },
+    "AdminDashboard.tsx": {
+      "reason": "Time calculations were incorrect - using hours instead of days. This caused weekly metrics to show only 7 hours of data and monthly metrics to show only 30 hours.",
+      "affectedMetrics": [
+        "newWeek - now correctly shows users created in last 7 days",
+        "activeMonth - now correctly shows users active in last 30 days",
+        "newMonth - now correctly shows users created in last 30 days",
+        "activeWeek - now correctly shows users active in last 7 days"
+      ]
+    }
+  },
+  "verification": {
+    "package.json": "Run 'npm run dev' on Windows PowerShell - should work without execution policy errors",
+    "AdminDashboard.tsx": "Check admin dashboard - weekly new users and monthly active users should show correct time periods"
+  }
+}
+
