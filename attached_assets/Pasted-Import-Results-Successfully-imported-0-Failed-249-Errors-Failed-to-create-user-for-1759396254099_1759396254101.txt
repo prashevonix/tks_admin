@@ -1,0 +1,32 @@
+Import Results:
+✓ Successfully imported: 0
+
+✗ Failed: 249
+
+Errors:
+• Failed to create user for : new row violates row-level security policy for table "users"
+• Failed to create user for : new row violates row-level security policy for table "users"
+• Failed to create user for : new row violates row-level security policy for table "users"
+• Failed to create user for : new row violates row-level security policy for table "users"
+• Failed to create user for : new row violates row-level security policy for table "users"
+• Failed to create user for : new row violates row-level security policy for table "users"
+• Failed to create user for : new row violates row-level security policy for table "users"
+• Failed to create user for : new row violates row-level security policy for table "users"
+• Failed to create user for : new row violates row-level security policy for table "users"
+• Failed to create user for : new row violates row-level security policy for table "users"
+• Failed to create user for : new row violates row-level security policy for table "users"
+• Failed to create user for : new row violates row-level security policy for table "users"
+• Failed to create user for : new row violates row-level security policy for table "users"
+• Failed to create user for : new row violates row-level security policy for table "users"
+• Failed to create user for : new row violates row-level security policy for table "users"
+• Failed to create user for : new row violates row-level security policy for table "users"
+• Failed to create user for : new row violates row-level security policy for table "users"
+• Failed to create user for : new row violates row-level security policy for table "users"
+• Failed to create user for : new row violates row-level security policy for table "users"
+• Failed to create user for : new row violates row-level security policy for table "users"
+• Failed to create user for : new row violates row-level security policy for table "users"
+• Failed to create user for : new row violates row-level security policy for table "users"
+• Failed to create user for : new row violates row-level security policy for table "users"
+• Failed to create user for : new row violates row-level security policy for table "users"
+• Failed to create user for : new row violates row-level security policy for table "users"
+• Failed to create user for : new row violates row-level security policy for table "users"

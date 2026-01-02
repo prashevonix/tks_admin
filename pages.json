@@ -1,0 +1,74 @@
+{
+  "pages": [
+    {
+      "name": "Landing Page",
+      "route": "/",
+      "description": "Main landing page with hero section, features, events, testimonials"
+    },
+    {
+      "name": "Login Page",
+      "route": "/login",
+      "description": "User login page with email and password authentication"
+    },
+    {
+      "name": "Signup Page",
+      "route": "/signup",
+      "description": "User registration page with detailed alumni information form"
+    },
+    {
+      "name": "Admin Login Page",
+      "route": "/admin/login",
+      "description": "Admin-specific login page"
+    },
+    {
+      "name": "Feed Page",
+      "route": "/feed",
+      "description": "Main social feed with posts, events, jobs, and connections"
+    },
+    {
+      "name": "Job Portal Page",
+      "route": "/job-portal",
+      "description": "Job listings and posting page for alumni"
+    },
+    {
+      "name": "Events Page",
+      "route": "/events",
+      "description": "Events listing and creation page"
+    },
+    {
+      "name": "Connections Page",
+      "route": "/connections",
+      "description": "Alumni directory and networking page"
+    },
+    {
+      "name": "Inbox Page",
+      "route": "/inbox",
+      "description": "Messaging inbox (currently empty state)"
+    },
+    {
+      "name": "Settings Page",
+      "route": "/settings",
+      "description": "User settings and preferences page"
+    },
+    {
+      "name": "User Profile Page",
+      "route": "/profile",
+      "description": "User profile management with personal, academic, and professional details"
+    },
+    {
+      "name": "Admin Dashboard",
+      "route": "/admin/dashboard",
+      "description": "Admin dashboard with user management and statistics"
+    },
+    {
+      "name": "Admin Import Page",
+      "route": "/admin/import",
+      "description": "Excel import page for bulk alumni data upload"
+    },
+    {
+      "name": "404 Not Found",
+      "route": "* (fallback)",
+      "description": "404 error page for undefined routes"
+    }
+  ]
+}
