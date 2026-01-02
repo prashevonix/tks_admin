@@ -2,7 +2,7 @@
   "sessionInfo": {
     "date": "2025-01-27",
     "description": "Changes made during development session",
-    "totalFilesChanged": 2
+    "totalFilesChanged": 3
   },
   "changes": [
     {
@@ -73,6 +73,92 @@
         }
       ],
       "summary": "Fixed time calculation bugs in admin dashboard analytics - corrected weekly (7 days) and monthly (30 days) time periods"
+    },
+    {
+      "file": "server/routes.ts",
+      "filePath": "server/routes.ts",
+      "changes": [
+        {
+          "type": "feature_addition",
+          "description": "Added graduation_year fetching from alumni table in /api/admin/users endpoint",
+          "location": "GET /api/admin/users endpoint (lines 1255-1300)",
+          "oldValue": "Only fetched users from users table without alumni data",
+          "newValue": "Fetches graduation_year from alumni table by matching user_id (foreign key) with users.id, then merges graduation_year into user objects",
+          "linesChanged": {
+            "start": 1255,
+            "end": 1300
+          },
+          "impact": "Admin dashboard user management table can now display graduation year for each user"
+        },
+        {
+          "type": "performance_optimization",
+          "description": "Implemented batching for alumni queries to prevent HeadersOverflowError",
+          "location": "GET /api/admin/users endpoint - alumni data fetching",
+          "oldValue": "Single query with all user IDs: .in('user_id', userIds) - caused HeadersOverflowError with many users",
+          "newValue": "Batched queries in chunks of 100 user IDs to avoid headers overflow, processes batches sequentially and aggregates results",
+          "linesChanged": {
+            "start": 1259,
+            "end": 1285
+          },
+          "impact": "Prevents HTTP headers overflow error when querying many users, ensures reliable data fetching regardless of user count"
+        },
+        {
+          "type": "bug_fix",
+          "description": "Fixed handling of graduation_year value 0 (treated as falsy)",
+          "location": "Graduation year mapping logic",
+          "oldValue": "graduation_year: graduationYearMap.get(user.id) || null - would return null for value 0",
+          "newValue": "Proper null/undefined check: gradYear !== undefined ? gradYear : null",
+          "linesChanged": {
+            "start": 1286,
+            "end": 1292
+          },
+          "impact": "Graduation year 0 is now correctly displayed instead of being treated as empty"
+        }
+      ],
+      "summary": "Enhanced admin users endpoint to fetch and return graduation_year from alumni table with batching to handle large user sets"
+    },
+    {
+      "file": "client/src/pages/AdminDashboard.tsx",
+      "filePath": "client/src/pages/AdminDashboard.tsx",
+      "changes": [
+        {
+          "type": "feature_addition",
+          "description": "Added Graduation Year column to user management table",
+          "location": "Users tab - TableHeader and TableBody sections",
+          "oldValue": "Table had columns: Username, Email, Role, Created At, Updated At, Actions",
+          "newValue": "Added 'Graduation Year' column header after Role column, displays graduation_year value or '—' if not found",
+          "linesChanged": {
+            "start": 2423,
+            "end": 2425
+          },
+          "impact": "Admins can now see graduation year for each user directly in the user management table"
+        },
+        {
+          "type": "ui_enhancement",
+          "description": "Added graduation year cell in table body with proper null handling",
+          "location": "TableBody - after Role cell, before Created At cell",
+          "oldValue": "No graduation year display",
+          "newValue": "TableCell that displays graduation_year if available, or '—' (dash) if null/undefined. Properly handles value 0.",
+          "linesChanged": {
+            "start": 2595,
+            "end": 2601
+          },
+          "impact": "Graduation year is now visible in the user management table with proper empty state handling"
+        },
+        {
+          "type": "bug_fix",
+          "description": "Fixed graduation year display to handle value 0 correctly",
+          "location": "Graduation year TableCell rendering",
+          "oldValue": "{user.graduation_year || (<span>—</span>)} - would show '—' for value 0",
+          "newValue": "Explicit null/undefined check: graduation_year !== null && graduation_year !== undefined ? graduation_year : '—'",
+          "linesChanged": {
+            "start": 2595,
+            "end": 2601
+          },
+          "impact": "Graduation year 0 is now correctly displayed instead of showing empty dash"
+        }
+      ],
+      "summary": "Added graduation year column to admin dashboard user management table with proper null/zero value handling"
     }
   ],
   "technicalDetails": {
@@ -88,11 +174,24 @@
         "newMonth - now correctly shows users created in last 30 days",
         "activeWeek - now correctly shows users active in last 7 days"
       ]
+    },
+    "server/routes.ts": {
+      "reason": "Admin dashboard needed to display graduation year for users. Alumni table has user_id as foreign key referencing users.id. Implemented batching to handle large user sets without HTTP headers overflow.",
+      "databaseRelationship": "alumni.user_id (foreign key) → users.id (primary key)",
+      "queryStrategy": "Batch queries in chunks of 100 user IDs to prevent HeadersOverflowError when querying Supabase with large arrays",
+      "dataFlow": "1. Fetch all users from users table → 2. Extract user IDs → 3. Query alumni table in batches → 4. Map user_id to graduation_year → 5. Merge graduation_year into user objects"
+    },
+    "AdminDashboard.tsx (graduation year)": {
+      "reason": "Added graduation year column to provide admins with quick visibility of user graduation information in the user management table.",
+      "uiLocation": "Users tab → User Management Table → New column after 'Role' column",
+      "displayLogic": "Shows graduation_year value if available, displays '—' (dash) if null/undefined, properly handles value 0"
     }
   },
   "verification": {
     "package.json": "Run 'npm run dev' on Windows PowerShell - should work without execution policy errors",
-    "AdminDashboard.tsx": "Check admin dashboard - weekly new users and monthly active users should show correct time periods"
+    "AdminDashboard.tsx": "Check admin dashboard - weekly new users and monthly active users should show correct time periods",
+    "server/routes.ts": "1. Load admin dashboard → 2. Go to Users tab → 3. Verify graduation year column appears → 4. Check server console for batch query logs → 5. Verify graduation years display correctly (or '—' if not found)",
+    "AdminDashboard.tsx (graduation year)": "1. Navigate to /admin/dashboard → 2. Click Users tab → 3. Verify 'Graduation Year' column header appears after 'Role' → 4. Verify graduation years display in table rows → 5. Verify '—' appears for users without graduation year"
   }
 }
 

@@ -2420,6 +2420,9 @@ The Kalyani School Alumni Team`;
                                 <TableHead className="font-semibold text-gray-700 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3 py-2">
                                   Role
                                 </TableHead>
+                                <TableHead className="font-semibold text-gray-700 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3 py-2">
+                                  Graduation Year
+                                </TableHead>
                                 <TableHead className="font-semibold text-gray-700 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3 py-2 hidden md:table-cell">
                                   Created At
                                 </TableHead>
@@ -2587,6 +2590,13 @@ The Kalyani School Alumni Team`;
                                           {user.user_role || "Alumni"}
                                         </Badge>
                                       </div>
+                                    )}
+                                  </TableCell>
+                                  <TableCell className="text-gray-600 text-xs sm:text-sm px-2 sm:px-3 py-2">
+                                    {user.graduation_year !== null && user.graduation_year !== undefined ? (
+                                      user.graduation_year
+                                    ) : (
+                                      <span className="text-gray-400">—</span>
                                     )}
                                   </TableCell>
                                   <TableCell className="text-gray-600 text-[10px] sm:text-xs px-2 sm:px-3 py-2 hidden md:table-cell whitespace-nowrap">

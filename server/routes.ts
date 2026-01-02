@@ -1252,6 +1252,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(500).json({ error: "Failed to fetch users" });
       }
 
+      // Fetch graduation_year from alumni table for each user
+      if (allUsers && allUsers.length > 0) {
+        const userIds = allUsers.map((u) => u.id);
+        
+        // Only query if we have user IDs
+        if (userIds.length > 0) {
+          // Batch queries to avoid headers overflow error (max 100 IDs per batch)
+          const BATCH_SIZE = 100;
+          const graduationYearMap = new Map<string, number | null>();
+          const batches = [];
+          
+          // Split user IDs into batches
+          for (let i = 0; i < userIds.length; i += BATCH_SIZE) {
+            batches.push(userIds.slice(i, i + BATCH_SIZE));
+          }
+
+          // Query each batch
+          for (const batch of batches) {
+            const { data: alumniData, error: alumniError } = await supabase
+              .from("alumni")
+              .select("user_id, graduation_year")
+              .in("user_id", batch);
+
+            if (alumniError) {
+              console.error("Error fetching alumni data for batch:", alumniError);
+              continue; // Skip this batch and continue with others
+            }
+
+            if (alumniData && alumniData.length > 0) {
+              alumniData.forEach((alumni) => {
+                if (alumni.user_id && alumni.graduation_year !== null && alumni.graduation_year !== undefined) {
+                  graduationYearMap.set(alumni.user_id, alumni.graduation_year);
+                }
+              });
+            }
+          }
+
+          console.log(`Found ${graduationYearMap.size} alumni records with graduation_year out of ${userIds.length} users`);
+
+          // Add graduation_year to each user object
+          const usersWithGraduationYear = allUsers.map((user) => {
+            const gradYear = graduationYearMap.get(user.id);
+            return {
+              ...user,
+              graduation_year: gradYear !== undefined ? gradYear : null,
+            };
+          });
+
+          return res.json(usersWithGraduationYear);
+        }
+      }
+
       res.json(allUsers || []);
     } catch (error) {
       console.error("Error fetching users:", error);
